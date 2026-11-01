@@ -9,123 +9,242 @@ interface LoaderProps {
 
 export default function Loader({ onComplete }: LoaderProps) {
   const [progress, setProgress] = useState(0);
-  const [phase, setPhase] = useState<'assembling' | 'complete'>('assembling');
+  const [statusText, setStatusText] = useState('SYS // INITIALIZING CORE');
+  const [phase, setPhase] = useState<'loading' | 'complete'>('loading');
   const loaderRef = useRef<HTMLDivElement>(null);
+  const mousePos = useRef({ x: 0, y: 0 });
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    // Check for reduced motion preference
+    // Accessibility check
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
     if (prefersReducedMotion) {
-      // Skip animation, go straight to content
-      setTimeout(() => onComplete(), 300);
+      setTimeout(() => onComplete(), 200);
       return;
     }
 
+    const handleMouseMove = (e: MouseEvent) => {
+      const { innerWidth, innerHeight } = window;
+      const x = (e.clientX / innerWidth - 0.5) * 16;
+      const y = (e.clientY / innerHeight - 0.5) * 16;
+      mousePos.current = { x, y };
+      setTilt({ x: -y, y: x });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+
     let frame: number;
     let start: number | null = null;
-    const DURATION = 2200;
+    const DURATION = 2400; // ~2.4 seconds
 
     const animate = (timestamp: number) => {
       if (!start) start = timestamp;
       const elapsed = timestamp - start;
       const raw = Math.min(elapsed / DURATION, 1);
-      // Ease out expo
-      const eased = raw === 1 ? 1 : 1 - Math.pow(2, -10 * raw);
-      setProgress(Math.round(eased * 100));
+      // Custom ease out cubic curve
+      const eased = 1 - Math.pow(1 - raw, 3);
+      const currentVal = Math.round(eased * 100);
+      setProgress(currentVal);
+
+      // Dynamic telemetry feedback
+      if (currentVal < 25) {
+        setStatusText('SYS // INITIALIZING CORE ENGINE');
+      } else if (currentVal < 50) {
+        setStatusText('SYS // CALIBRATING 3D GEOMETRY');
+      } else if (currentVal < 75) {
+        setStatusText('SYS // SYNCHRONIZING INTERACTIVE MODULES');
+      } else if (currentVal < 99) {
+        setStatusText('SYS // FINALIZING TATAKAE MATRIX');
+      } else {
+        setStatusText('SYS // READY · ENTERING STUDIO');
+      }
 
       if (raw < 1) {
         frame = requestAnimationFrame(animate);
       } else {
-        // Phase complete
         setPhase('complete');
         setTimeout(() => {
           if (loaderRef.current) {
-            loaderRef.current.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            loaderRef.current.style.transition = 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
             loaderRef.current.style.opacity = '0';
-            loaderRef.current.style.transform = 'scale(1.04)';
+            loaderRef.current.style.transform = 'scale(1.08)';
+            loaderRef.current.style.filter = 'blur(10px)';
           }
-          setTimeout(onComplete, 600);
-        }, 300);
+          setTimeout(onComplete, 750);
+        }, 250);
       }
     };
 
     frame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frame);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
   }, [onComplete]);
 
   return (
     <div
       ref={loaderRef}
-      className="fixed inset-0 z-[1000] flex flex-col items-center justify-center"
+      className="fixed inset-0 z-[1000] flex flex-col items-center justify-center select-none overflow-hidden"
       style={{ background: '#F7F7F5' }}
-      aria-label="Loading TATAKAE LABS"
+      aria-label="Loading TATAKAE LABS experience"
       role="status"
     >
-      {/* Logo with animation */}
+      <style jsx>{`
+        @keyframes pulseRing1 {
+          0% { transform: scale(0.92); opacity: 0.15; }
+          50% { transform: scale(1.08); opacity: 0.45; }
+          100% { transform: scale(0.92); opacity: 0.15; }
+        }
+        @keyframes pulseRing2 {
+          0% { transform: scale(1.1); opacity: 0.1; }
+          50% { transform: scale(0.95); opacity: 0.3; }
+          100% { transform: scale(1.1); opacity: 0.1; }
+        }
+        @keyframes orbitRadar {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes logoFloatCinematic {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-8px) rotate(1.2deg); }
+        }
+        @keyframes sweepGlint {
+          0% { transform: translateX(-150%) rotate(45deg); opacity: 0; }
+          30% { opacity: 0.6; }
+          60%, 100% { transform: translateX(250%) rotate(45deg); opacity: 0; }
+        }
+      `}</style>
+
+      {/* Architectural Corner Reticles */}
+      <div className="absolute top-8 left-8 flex items-center gap-2 font-mono text-[0.62rem] text-[#080B72]/30 tracking-widest uppercase">
+        <span className="w-2.5 h-[1px] bg-[#080B72]/40" />
+        <span>SYS.TATAKAE // v2.4</span>
+      </div>
+      <div className="absolute top-8 right-8 flex items-center gap-2 font-mono text-[0.62rem] text-[#080B72]/30 tracking-widest uppercase">
+        <span>LOC // 35.6762° N</span>
+        <span className="w-2.5 h-[1px] bg-[#080B72]/40" />
+      </div>
+      <div className="absolute bottom-8 left-8 flex items-center gap-2 font-mono text-[0.62rem] text-[#080B72]/30 tracking-widest uppercase">
+        <span className="w-2.5 h-[1px] bg-[#080B72]/40" />
+        <span>PRECISION ARCHITECTURE</span>
+      </div>
+      <div className="absolute bottom-8 right-8 flex items-center gap-2 font-mono text-[0.62rem] text-[#080B72]/30 tracking-widest uppercase">
+        <span>BUILD_OK // 200</span>
+        <span className="w-2.5 h-[1px] bg-[#080B72]/40" />
+      </div>
+
+      {/* Main Center Stage */}
       <div
         className="relative flex items-center justify-center"
         style={{
-          animation: phase === 'assembling'
-            ? 'logoFloat 3s ease-in-out infinite'
-            : 'none',
+          width: '380px',
+          height: '380px',
+          perspective: '1200px',
         }}
       >
-        <style jsx>{`
-          @keyframes logoFloat {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            33% { transform: translateY(-8px) rotate(1deg); }
-            66% { transform: translateY(-4px) rotate(-0.5deg); }
-          }
-          @keyframes logoReveal {
-            from { opacity: 0; transform: scale(0.7) rotate(-8deg); filter: blur(20px); }
-            to { opacity: 1; transform: scale(1) rotate(0deg); filter: blur(0px); }
-          }
-          @keyframes glowPulse {
-            0%, 100% { box-shadow: 0 0 60px rgba(8, 11, 114, 0.08); }
-            50% { box-shadow: 0 0 100px rgba(8, 11, 114, 0.18); }
-          }
-          @keyframes shimmer {
-            0% { transform: translateX(-100%) rotate(45deg); }
-            100% { transform: translateX(200%) rotate(45deg); }
-          }
-        `}</style>
-
-        {/* Glow ring */}
+        {/* Radar Orbit Dot & Guideline */}
         <div
-          className="absolute rounded-full"
+          className="absolute rounded-full border border-[#080B72]/15 pointer-events-none"
           style={{
-            width: '220px',
-            height: '220px',
-            animation: 'glowPulse 2.5s ease-in-out infinite',
-            background: 'radial-gradient(circle, rgba(8,11,114,0.06) 0%, transparent 70%)',
+            width: '340px',
+            height: '340px',
+            animation: 'orbitRadar 18s linear infinite',
+          }}
+        >
+          <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#080B72] shadow-[0_0_10px_#080B72]" />
+        </div>
+
+        {/* Concentric Organic Ripple 1 */}
+        <div
+          className="absolute rounded-full pointer-events-none border border-[#080B72]/20"
+          style={{
+            width: '290px',
+            height: '290px',
+            animation: 'pulseRing1 4.5s ease-in-out infinite',
           }}
         />
 
-        {/* Logo image */}
+        {/* Concentric Organic Ripple 2 */}
         <div
+          className="absolute rounded-full pointer-events-none border border-dashed border-[#080B72]/15"
           style={{
-            animation: 'logoReveal 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards',
-            opacity: 0,
+            width: '250px',
+            height: '250px',
+            animation: 'pulseRing2 3.8s ease-in-out infinite',
+          }}
+        />
+
+        {/* Dynamic Volumetric Glow */}
+        <div
+          className="absolute rounded-full pointer-events-none"
+          style={{
+            width: '220px',
+            height: '220px',
+            background: 'radial-gradient(circle, rgba(8, 11, 114, 0.22) 0%, rgba(5, 6, 47, 0.05) 55%, transparent 75%)',
+            filter: 'blur(16px)',
+          }}
+        />
+
+        {/* Center 3D Floating TATAKAE LABS Emblem */}
+        <div
+          className="relative transition-transform duration-200 ease-out flex items-center justify-center"
+          style={{
+            transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+            transformStyle: 'preserve-3d',
           }}
         >
-          <Image
-            src="/logo.png"
-            alt="TATAKAE LABS"
-            width={160}
-            height={160}
-            priority
-            style={{ userSelect: 'none', pointerEvents: 'none' }}
-          />
+          <div
+            className="relative flex items-center justify-center p-2 rounded-full"
+            style={{
+              animation: phase === 'loading' ? 'logoFloatCinematic 4s ease-in-out infinite' : 'none',
+              filter: 'drop-shadow(0 25px 35px rgba(8, 11, 114, 0.22)) drop-shadow(0 6px 12px rgba(5, 6, 47, 0.12))',
+            }}
+          >
+            {/* The Logo Asset */}
+            <Image
+              src="/logo.png"
+              alt="TATAKAE LABS Emblem"
+              width={190}
+              height={190}
+              priority
+              className="pointer-events-none select-none"
+              style={{
+                transform: 'translateZ(40px)',
+              }}
+            />
+
+            {/* Shimmer Light Reflection Sweep */}
+            <div
+              className="absolute inset-0 rounded-full overflow-hidden pointer-events-none"
+              style={{
+                maskImage: 'radial-gradient(circle, black 65%, transparent 70%)',
+                WebkitMaskImage: 'radial-gradient(circle, black 65%, transparent 70%)',
+              }}
+            >
+              <div
+                className="absolute inset-0 w-[40px] h-[300%]"
+                style={{
+                  background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent)',
+                  animation: 'sweepGlint 3s cubic-bezier(0.4, 0, 0.2, 1) infinite',
+                }}
+              />
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Progress */}
-      <div className="mt-12 flex flex-col items-center gap-4">
-        {/* Progress bar */}
+      {/* Minimalistic Progress & Telemetry Section */}
+      <div className="mt-4 flex flex-col items-center gap-3.5 z-10">
+        {/* Shimmer Precision Progress Bar */}
         <div
-          className="relative overflow-hidden"
-          style={{ width: '200px', height: '1px', background: 'rgba(8,11,114,0.12)' }}
+          className="relative overflow-hidden rounded-full"
+          style={{
+            width: '260px',
+            height: '2px',
+            background: 'rgba(8, 11, 114, 0.12)',
+          }}
         >
           <div
             style={{
@@ -134,54 +253,40 @@ export default function Loader({ onComplete }: LoaderProps) {
               top: 0,
               height: '100%',
               width: `${progress}%`,
-              background: '#080B72',
-              transition: 'width 0.1s linear',
-            }}
-          />
-          {/* Shimmer effect */}
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              height: '100%',
-              width: '40px',
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)',
-              animation: 'shimmer 1.5s ease-in-out infinite',
+              background: 'linear-gradient(90deg, #080B72 0%, #3037E0 100%)',
+              transition: 'width 0.12s linear',
             }}
           />
         </div>
 
-        {/* Counter */}
-        <div
-          style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontSize: '0.7rem',
-            fontWeight: 500,
-            letterSpacing: '0.15em',
-            color: '#080B72',
-            opacity: 0.5,
-          }}
-        >
-          {progress.toString().padStart(2, '0')}
+        {/* Status Text & Percentage */}
+        <div className="flex items-center justify-between w-[260px] font-mono">
+          <span
+            className="text-[0.65rem] font-medium tracking-[0.12em] text-[#080B72]/65 uppercase transition-all duration-200"
+          >
+            {statusText}
+          </span>
+          <span
+            className="text-[0.78rem] font-bold tracking-[0.08em] text-[#080B72] tabular-nums"
+          >
+            {progress.toString().padStart(2, '0')}%
+          </span>
         </div>
       </div>
 
-      {/* Company name fade in */}
+      {/* Company Wordmark */}
       <div
-        className="absolute bottom-12"
+        className="mt-6 flex flex-col items-center gap-1 transition-opacity duration-700"
         style={{
-          fontFamily: "'Space Grotesk', sans-serif",
-          fontSize: '0.65rem',
-          fontWeight: 500,
-          letterSpacing: '0.25em',
-          color: '#080B72',
-          opacity: progress > 40 ? 0.4 : 0,
-          transition: 'opacity 0.8s ease',
-          textTransform: 'uppercase',
+          opacity: progress > 30 ? 1 : 0,
         }}
       >
-        Building Technology for What&apos;s Next
+        <span className="font-bold text-[0.85rem] tracking-[0.22em] text-[#080B72] uppercase font-sans">
+          TATAKAE LABS
+        </span>
+        <span className="text-[0.62rem] font-medium tracking-[0.2em] text-[#080B72]/45 uppercase font-sans">
+          Technology · Intelligence · Scale
+        </span>
       </div>
     </div>
   );

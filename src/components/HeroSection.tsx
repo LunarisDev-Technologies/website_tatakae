@@ -1,6 +1,8 @@
 'use client';
 
 import { Suspense, lazy, useEffect, useRef } from 'react';
+import HaikeiBlobs from './HaikeiBlobs';
+import TextReveal from './TextReveal';
 
 const ThreeScene = lazy(() => import('./HeroThreeScene'));
 
@@ -12,19 +14,18 @@ export default function HeroSection() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Entrance animation using requestAnimationFrame instead of GSAP to avoid SSR issues
     const elements = [headlineRef.current, subtitleRef.current, ctaRef.current, scrollRef.current];
     elements.forEach((el, i) => {
       if (!el) return;
       el.style.opacity = '0';
-      el.style.transform = 'translateY(40px)';
+      el.style.transform = 'translateY(36px)';
       setTimeout(() => {
         if (el) {
           el.style.transition = `opacity 0.9s cubic-bezier(0.23, 1, 0.32, 1) ${i * 0.12}s, transform 0.9s cubic-bezier(0.23, 1, 0.32, 1) ${i * 0.12}s`;
           el.style.opacity = '1';
           el.style.transform = 'translateY(0)';
         }
-      }, 600 + i * 120);
+      }, 500 + i * 100);
     });
   }, []);
 
@@ -40,34 +41,41 @@ export default function HeroSection() {
       className="relative min-h-screen flex flex-col justify-end overflow-hidden"
       style={{ background: '#F7F7F5' }}
     >
-      {/* 3D Background */}
+      {/* Haikei Organic Blobs Background */}
+      <HaikeiBlobs />
+
+      {/* 3D WebGL Canvas Layer */}
       <div className="canvas-wrapper">
         <Suspense fallback={null}>
           <ThreeScene />
         </Suspense>
       </div>
 
-      {/* Grid lines */}
+      {/* Architectural Swiss grid lines */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
-        <div style={{
-          position: 'absolute',
-          left: '5vw',
-          top: 0,
-          bottom: 0,
-          width: '1px',
-          background: 'rgba(8,11,114,0.06)',
-        }} />
-        <div style={{
-          position: 'absolute',
-          right: '5vw',
-          top: 0,
-          bottom: 0,
-          width: '1px',
-          background: 'rgba(8,11,114,0.06)',
-        }} />
+        <div
+          style={{
+            position: 'absolute',
+            left: '5vw',
+            top: 0,
+            bottom: 0,
+            width: '1px',
+            background: 'rgba(8,11,114,0.06)',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            right: '5vw',
+            top: 0,
+            bottom: 0,
+            width: '1px',
+            background: 'rgba(8,11,114,0.06)',
+          }}
+        />
       </div>
 
-      {/* Content */}
+      {/* Hero Content */}
       <div
         className="relative z-10 section-padding pt-0"
         style={{ paddingTop: '0', paddingBottom: '80px' }}
@@ -76,20 +84,27 @@ export default function HeroSection() {
           {/* Tag */}
           <div
             ref={headlineRef}
-            className="mb-6"
+            className="mb-8"
             style={{ opacity: 0 }}
           >
-            <span className="tag-pill" style={{ color: '#080B72', borderColor: 'rgba(8,11,114,0.3)' }}>
-              Est. 2024 · Software Studio
+            <span
+              className="tag-pill"
+              style={{
+                color: '#080B72',
+                borderColor: 'rgba(8,11,114,0.3)',
+                background: 'rgba(8,11,114,0.03)',
+              }}
+            >
+              Est. 2024 · Software & SaaS Innovation Studio
             </span>
           </div>
 
-          {/* Headline */}
+          {/* Headline with animejs character reveal */}
           <div ref={subtitleRef} style={{ opacity: 0 }}>
-            <h1 className="text-display" style={{ color: '#080B72', maxWidth: '900px' }}>
-              WE BUILD
+            <h1 className="text-display" style={{ color: '#080B72', maxWidth: '980px' }}>
+              <TextReveal text="WE BUILD" as="span" delay={300} />
               <br />
-              WHAT&apos;S NEXT.
+              <TextReveal text="WHAT'S NEXT." as="span" delay={550} />
             </h1>
           </div>
 
@@ -103,15 +118,15 @@ export default function HeroSection() {
               className="text-body"
               style={{
                 color: '#05062F',
-                opacity: 0.65,
-                maxWidth: '440px',
+                opacity: 0.7,
+                maxWidth: '460px',
               }}
             >
               Technology, thoughtfully engineered. We build digital products
               and intelligent systems that help businesses move forward.
             </p>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <button
                 className="btn-primary"
                 onClick={() => handleScroll('#products')}
@@ -135,7 +150,7 @@ export default function HeroSection() {
       {/* Scroll indicator */}
       <div
         ref={scrollRef}
-        className="absolute bottom-8 right-[5vw] flex flex-col items-center gap-3"
+        className="absolute bottom-8 right-[5vw] flex flex-col items-center gap-3 z-10"
         style={{ opacity: 0 }}
       >
         <div

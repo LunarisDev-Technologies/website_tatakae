@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://tatakaelabs.tech"),
   title: "TATAKAE LABS — Building Technology for What's Next",
   description:
     "TATAKAE LABS is a technology company focused on building intelligent software products, scalable digital platforms and custom technology solutions. We simplify complex business operations through thoughtfully engineered software.",
   keywords: [
     "TATAKAE LABS",
+    "tatakaelabs.tech",
     "software development",
     "SaaS products",
     "web applications",
@@ -20,7 +22,7 @@ export const metadata: Metadata = {
     title: "TATAKAE LABS — Building Technology for What's Next",
     description:
       "Technology, thoughtfully engineered. We build digital products and intelligent systems that help businesses move forward.",
-    url: "https://tatakae-labs.com",
+    url: "https://tatakaelabs.tech",
     siteName: "TATAKAE LABS",
     type: "website",
     images: [

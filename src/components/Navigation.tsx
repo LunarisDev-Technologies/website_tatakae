@@ -1,32 +1,48 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
-const navLinks = [
-  { label: 'Services', href: '#services' },
-  { label: 'Products', href: '#products' },
-  { label: 'About', href: '#philosophy' },
-  { label: 'Contact', href: '#contact' },
+const navItems = [
+  { id: 'services', index: '01', label: 'Services', href: '#services' },
+  { id: 'products', index: '02', label: 'Products', href: '#products' },
+  { id: 'philosophy', index: '03', label: 'Philosophy', href: '#philosophy' },
+  { id: 'why', index: '04', label: 'Why Us', href: '#why' },
+  { id: 'contact', index: '05', label: 'Contact', href: '#contact' },
 ];
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const navRef = useRef<HTMLElement>(null);
+  const [activeSection, setActiveSection] = useState('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 60);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 40);
+
+      const sections = navItems.map((item) => document.getElementById(item.id));
+      const scrollPosition = window.scrollY + 250;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const sec = sections[i];
+        if (sec && sec.offsetTop <= scrollPosition) {
+          setActiveSection(navItems[i].id);
+          break;
+        }
+      }
+      if (window.scrollY < 200) {
+        setActiveSection('');
+      }
     };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
-    setMenuOpen(false);
+    setMobileMenuOpen(false);
     const target = document.querySelector(href);
     if (target) {
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -35,168 +51,308 @@ export default function Navigation() {
 
   return (
     <>
-      <nav
-        ref={navRef}
-        className="fixed top-0 left-0 right-0 z-[100] transition-all duration-500"
+      <header
         style={{
-          paddingTop: scrolled ? '16px' : '24px',
-          paddingBottom: scrolled ? '16px' : '24px',
-          paddingLeft: '5vw',
-          paddingRight: '5vw',
-          background: scrolled ? 'rgba(247,247,245,0.92)' : 'transparent',
-          backdropFilter: scrolled ? 'blur(12px)' : 'none',
-          borderBottom: scrolled ? '1px solid rgba(8,11,114,0.08)' : 'none',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 50,
+          display: 'flex',
+          justifyContent: 'center',
+          padding: scrolled ? '12px 16px' : '20px 24px',
+          transition: 'padding 0.4s ease',
+          pointerEvents: 'none',
         }}
       >
-        <div className="flex items-center justify-between max-w-[1600px] mx-auto">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <Image
-              src="/logo.png"
-              alt="TATAKAE LABS"
-              width={36}
-              height={36}
+        <div
+          style={{
+            pointerEvents: 'auto',
+            width: '100%',
+            maxWidth: '1440px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '16px',
+            padding: scrolled ? '10px 22px' : '0px',
+            backgroundColor: scrolled ? 'rgba(247, 247, 245, 0.92)' : 'transparent',
+            backdropFilter: scrolled ? 'blur(16px)' : 'none',
+            WebkitBackdropFilter: scrolled ? 'blur(16px)' : 'none',
+            borderRadius: scrolled ? '9999px' : '0px',
+            border: scrolled ? '1px solid rgba(8, 11, 114, 0.1)' : '1px solid transparent',
+            boxShadow: scrolled ? '0 16px 36px -10px rgba(5, 6, 47, 0.08)' : 'none',
+            transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+          }}
+        >
+          {/* Brand Logo & Name */}
+          <Link
+            href="/"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              textDecoration: 'none',
+              color: '#080B72',
+              userSelect: 'none',
+              flexShrink: 0,
+            }}
+          >
+            <div
               style={{
-                transition: 'transform 0.4s cubic-bezier(0.23, 1, 0.32, 1)',
-              }}
-              className="group-hover:rotate-12"
-            />
-            <span
-              style={{
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontWeight: 700,
-                fontSize: '0.85rem',
-                letterSpacing: '0.12em',
-                color: '#080B72',
-                textTransform: 'uppercase',
+                width: '36px',
+                height: '36px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '50%',
+                backgroundColor: 'rgba(8, 11, 114, 0.05)',
+                transition: 'transform 0.3s ease',
               }}
             >
-              Tatakae Labs
-            </span>
-          </Link>
-
-          {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-10">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={(e) => handleNavClick(e, link.href)}
-                className="hover-underline"
+              <Image
+                src="/logo.png"
+                alt="TATAKAE LABS Emblem"
+                width={30}
+                height={30}
+                priority
+                style={{ width: 'auto', height: 'auto' }}
+              />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span
                 style={{
-                  fontFamily: "'Space Grotesk', sans-serif",
-                  fontSize: '0.78rem',
-                  fontWeight: 500,
-                  letterSpacing: '0.08em',
+                  fontWeight: 700,
+                  fontSize: '0.88rem',
+                  letterSpacing: '0.14em',
                   color: '#080B72',
                   textTransform: 'uppercase',
-                  textDecoration: 'none',
-                  opacity: 0.7,
-                  transition: 'opacity 0.3s ease',
+                  lineHeight: 1.1,
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.7'; }}
               >
-                {link.label}
-              </a>
-            ))}
+                TATAKAE LABS
+              </span>
+              <span
+                style={{
+                  fontSize: '0.58rem',
+                  fontWeight: 500,
+                  letterSpacing: '0.14em',
+                  color: 'rgba(8, 11, 114, 0.45)',
+                  textTransform: 'uppercase',
+                  marginTop: '2px',
+                }}
+                className="hidden sm:block"
+              >
+                tatakaelabs.tech
+              </span>
+            </div>
+          </Link>
+
+          {/* Desktop Navigation Links */}
+          <nav
+            style={{
+              display: 'none',
+              alignItems: 'center',
+              gap: '6px',
+            }}
+            className="md:!flex"
+          >
+            {navItems.map((item) => {
+              const isActive = activeSection === item.id;
+              return (
+                <a
+                  key={item.id}
+                  href={item.href}
+                  onClick={(e) => handleNavClick(e, item.href)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '8px 14px',
+                    borderRadius: '9999px',
+                    fontSize: '0.74rem',
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase',
+                    fontWeight: isActive ? 600 : 500,
+                    color: '#080B72',
+                    backgroundColor: isActive ? 'rgba(8, 11, 114, 0.08)' : 'transparent',
+                    textDecoration: 'none',
+                    transition: 'all 0.25s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) e.currentTarget.style.backgroundColor = 'rgba(8, 11, 114, 0.04)';
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) e.currentTarget.style.backgroundColor = 'transparent';
+                  }}
+                >
+                  <span style={{ fontSize: '0.6rem', opacity: 0.4, fontFamily: 'monospace' }}>
+                    {item.index}
+                  </span>
+                  <span>{item.label}</span>
+                </a>
+              );
+            })}
+          </nav>
+
+          {/* CTA & Mobile Hamburger */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              flexShrink: 0,
+            }}
+          >
             <a
               href="#contact"
               onClick={(e) => handleNavClick(e, '#contact')}
               className="btn-primary"
-              style={{ padding: '10px 20px', fontSize: '0.72rem' }}
-            >
-              Let&apos;s Build
-            </a>
-          </div>
-
-          {/* Mobile hamburger */}
-          <button
-            className="flex md:hidden flex-col gap-[5px] p-2"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle navigation"
-            aria-expanded={menuOpen}
-          >
-            <span
               style={{
-                display: 'block',
-                width: '22px',
-                height: '1.5px',
-                background: '#080B72',
-                transition: 'all 0.3s ease',
-                transform: menuOpen ? 'translateY(6.5px) rotate(45deg)' : 'none',
-              }}
-            />
-            <span
-              style={{
-                display: 'block',
-                width: '22px',
-                height: '1.5px',
-                background: '#080B72',
-                transition: 'all 0.3s ease',
-                opacity: menuOpen ? 0 : 1,
-              }}
-            />
-            <span
-              style={{
-                display: 'block',
-                width: '22px',
-                height: '1.5px',
-                background: '#080B72',
-                transition: 'all 0.3s ease',
-                transform: menuOpen ? 'translateY(-6.5px) rotate(-45deg)' : 'none',
-              }}
-            />
-          </button>
-        </div>
-      </nav>
-
-      {/* Mobile menu overlay */}
-      <div
-        className="fixed inset-0 z-[99] md:hidden flex flex-col"
-        style={{
-          background: '#F7F7F5',
-          opacity: menuOpen ? 1 : 0,
-          pointerEvents: menuOpen ? 'all' : 'none',
-          transition: 'opacity 0.4s ease',
-          paddingTop: '100px',
-          paddingLeft: '5vw',
-          paddingRight: '5vw',
-        }}
-      >
-        <div className="flex flex-col gap-8">
-          {navLinks.map((link, i) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={(e) => handleNavClick(e, link.href)}
-              style={{
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontSize: 'clamp(2rem, 8vw, 3rem)',
-                fontWeight: 700,
-                color: '#080B72',
+                padding: '9px 20px',
+                fontSize: '0.72rem',
                 textDecoration: 'none',
-                opacity: menuOpen ? 1 : 0,
-                transform: menuOpen ? 'translateY(0)' : 'translateY(20px)',
-                transition: `opacity 0.4s ease ${i * 0.08}s, transform 0.4s ease ${i * 0.08}s`,
-                letterSpacing: '-0.02em',
               }}
             >
-              {link.label}
+              Start a Project
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+                <path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
             </a>
-          ))}
+
+            {/* Mobile Hamburger Toggle */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '38px',
+                height: '38px',
+                borderRadius: '50%',
+                backgroundColor: 'rgba(8, 11, 114, 0.06)',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '8px',
+                gap: '5px',
+              }}
+              aria-label="Toggle navigation drawer"
+            >
+              <span
+                style={{
+                  display: 'block',
+                  width: '18px',
+                  height: '1.5px',
+                  backgroundColor: '#080B72',
+                  transition: 'all 0.3s ease',
+                  transform: mobileMenuOpen ? 'translateY(3.25px) rotate(45deg)' : 'none',
+                }}
+              />
+              <span
+                style={{
+                  display: 'block',
+                  width: '18px',
+                  height: '1.5px',
+                  backgroundColor: '#080B72',
+                  transition: 'all 0.3s ease',
+                  transform: mobileMenuOpen ? 'translateY(-3.25px) rotate(-45deg)' : 'none',
+                }}
+              />
+            </button>
+          </div>
         </div>
+      </header>
+
+      {/* Mobile Drawer Overlay */}
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 45,
+          backgroundColor: '#F7F7F5',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          padding: '110px 32px 40px',
+          opacity: mobileMenuOpen ? 1 : 0,
+          pointerEvents: mobileMenuOpen ? 'all' : 'none',
+          transform: mobileMenuOpen ? 'translateY(0)' : 'translateY(-16px)',
+          transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        }}
+        className="md:hidden"
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <span
+            style={{
+              fontSize: '0.65rem',
+              fontWeight: 700,
+              letterSpacing: '0.2em',
+              color: 'rgba(8, 11, 114, 0.4)',
+              textTransform: 'uppercase',
+            }}
+          >
+            Navigation
+          </span>
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {navItems.map((item) => (
+              <a
+                key={item.id}
+                href={item.href}
+                onClick={(e) => handleNavClick(e, item.href)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'baseline',
+                  justifyContent: 'space-between',
+                  fontSize: '1.8rem',
+                  fontWeight: 700,
+                  color: '#080B72',
+                  textDecoration: 'none',
+                  borderBottom: '1px solid rgba(8, 11, 114, 0.1)',
+                  paddingBottom: '12px',
+                }}
+              >
+                <span>{item.label}</span>
+                <span style={{ fontSize: '0.75rem', fontFamily: 'monospace', opacity: 0.4 }}>
+                  {item.index}
+                </span>
+              </a>
+            ))}
+          </nav>
+        </div>
+
         <div
-          className="mt-auto mb-12"
           style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontSize: '0.75rem',
-            color: '#080B72',
-            opacity: 0.4,
-            letterSpacing: '0.1em',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+            paddingTop: '20px',
+            borderTop: '1px solid rgba(8, 11, 114, 0.1)',
           }}
         >
-          © 2024 TATAKAE LABS
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'rgba(8, 11, 114, 0.7)' }}>
+            <span>Inquiries</span>
+            <a
+              href="mailto:hello@tatakaelabs.tech"
+              style={{ fontWeight: 600, color: '#080B72', textDecoration: 'none' }}
+            >
+              hello@tatakaelabs.tech
+            </a>
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              fontSize: '0.68rem',
+              color: 'rgba(8, 11, 114, 0.4)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              fontFamily: 'monospace',
+            }}
+          >
+            <span>tatakaelabs.tech</span>
+            <span>© 2026</span>
+          </div>
         </div>
       </div>
     </>

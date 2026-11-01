@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
+import TextReveal from './TextReveal';
 
 export default function IntroSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -57,11 +58,11 @@ export default function IntroSection() {
               className="text-headline"
               style={{ color: '#F7F7F5' }}
             >
-              NOT JUST SOFTWARE.
+              <TextReveal text="NOT JUST SOFTWARE." as="span" delay={100} />
               <br />
-              A BETTER WAY
+              <TextReveal text="A BETTER WAY" as="span" delay={300} />
               <br />
-              FORWARD.
+              <TextReveal text="FORWARD." as="span" delay={500} />
             </h2>
           </div>
 
@@ -168,3 +169,4 @@ export default function IntroSection() {
     </section>
   );
 }
+

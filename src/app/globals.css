@@ -1,8 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
   --navy: #080B72;
@@ -32,6 +28,19 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* Lenis smooth scrolling */
 html.lenis, html.lenis body {
   height: auto;
 }
@@ -44,22 +53,30 @@ html.lenis, html.lenis body {
   overflow: hidden;
 }
 
+/* Typography tokens */
 .text-display {
-  font-size: clamp(3rem, 8vw, 9rem);
+  font-size: clamp(2.8rem, 7.5vw, 8.5rem);
   font-weight: 700;
-  line-height: 0.9;
+  line-height: 0.92;
   letter-spacing: -0.03em;
 }
 
 .text-headline {
-  font-size: clamp(2rem, 5vw, 5.5rem);
+  font-size: clamp(2rem, 5vw, 5rem);
   font-weight: 700;
   line-height: 0.95;
   letter-spacing: -0.025em;
 }
 
+.text-subheadline {
+  font-size: clamp(1.2rem, 2.5vw, 2.2rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
 .text-body {
-  font-size: clamp(0.9rem, 1.1vw, 1.05rem);
+  font-size: clamp(0.92rem, 1.1vw, 1.05rem);
   line-height: 1.75;
   letter-spacing: 0.01em;
   font-weight: 300;
@@ -71,73 +88,94 @@ html.lenis, html.lenis body {
 
 @media (max-width: 768px) {
   .section-padding {
-    padding: 80px 5vw;
+    padding: 80px 6vw;
   }
 }
 
+/* Direct resilient nav classes */
+.nav-fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.nav-inner-bar {
+  pointer-events: auto;
+  width: 100%;
+  max-width: 1500px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Buttons */
 .btn-primary {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 14px 28px;
+  gap: 0.6rem;
+  padding: 12px 26px;
   background: var(--navy);
   color: var(--white);
   font-weight: 600;
-  font-size: 0.8rem;
-  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
+  border-radius: 9999px;
   border: 1px solid var(--navy);
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-  font-family: inherit;
+  transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .btn-primary:hover {
-  background: transparent;
-  color: var(--navy);
+  background: var(--midnight);
+  border-color: var(--midnight);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px -6px rgba(8, 11, 114, 0.35);
 }
 
 .btn-outline {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 14px 28px;
+  gap: 0.6rem;
+  padding: 12px 26px;
   background: transparent;
   color: var(--navy);
   font-weight: 600;
-  font-size: 0.8rem;
-  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
+  border-radius: 9999px;
   border: 1px solid var(--navy);
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-  font-family: inherit;
+  transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .btn-outline:hover {
   background: var(--navy);
   color: var(--white);
+  transform: translateY(-1px);
 }
 
-.hover-underline {
-  position: relative;
-}
-
-.hover-underline::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: currentColor;
-  transition: width 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.hover-underline:hover::after {
-  width: 100%;
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 14px;
+  border: 1px solid currentColor;
+  border-radius: 9999px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .form-input {
@@ -161,25 +199,14 @@ html.lenis, html.lenis body {
   color: var(--grey-dark);
 }
 
-.tag-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 12px;
-  border: 1px solid currentColor;
-  border-radius: 100px;
-  font-size: 0.65rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
+/* Marquee */
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
 
 .marquee-track {
-  animation: marquee 22s linear infinite;
+  animation: marquee 24s linear infinite;
   display: flex;
   gap: 4rem;
   white-space: nowrap;
