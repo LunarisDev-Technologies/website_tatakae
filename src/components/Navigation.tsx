@@ -206,7 +206,7 @@ export default function Navigation() {
             <a
               href="#contact"
               onClick={(e) => handleNavClick(e, '#contact')}
-              className="btn-primary"
+              className="btn-primary hidden sm:inline-flex"
               style={{
                 padding: '9px 20px',
                 fontSize: '0.72rem',
@@ -228,14 +228,15 @@ export default function Navigation() {
                 flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
-                width: '38px',
-                height: '38px',
+                width: '42px',
+                height: '42px',
                 borderRadius: '50%',
                 backgroundColor: 'rgba(8, 11, 114, 0.06)',
                 border: 'none',
                 cursor: 'pointer',
-                padding: '8px',
+                padding: '10px',
                 gap: '5px',
+                touchAction: 'manipulation',
               }}
               aria-label="Toggle navigation drawer"
             >
@@ -274,7 +275,9 @@ export default function Navigation() {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          padding: '110px 32px 40px',
+          padding: 'max(90px, 12vh) 24px 36px',
+          overflowY: 'auto',
+          WebkitOverflowScrolling: 'touch',
           opacity: mobileMenuOpen ? 1 : 0,
           pointerEvents: mobileMenuOpen ? 'all' : 'none',
           transform: mobileMenuOpen ? 'translateY(0)' : 'translateY(-16px)',
@@ -294,7 +297,7 @@ export default function Navigation() {
           >
             Navigation
           </span>
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             {navItems.map((item) => (
               <a
                 key={item.id}
@@ -304,12 +307,13 @@ export default function Navigation() {
                   display: 'flex',
                   alignItems: 'baseline',
                   justifyContent: 'space-between',
-                  fontSize: '1.8rem',
+                  fontSize: 'clamp(1.4rem, 6vw, 1.8rem)',
                   fontWeight: 700,
                   color: '#080B72',
                   textDecoration: 'none',
                   borderBottom: '1px solid rgba(8, 11, 114, 0.1)',
-                  paddingBottom: '12px',
+                  paddingBottom: '10px',
+                  minHeight: '44px',
                 }}
               >
                 <span>{item.label}</span>
@@ -319,6 +323,23 @@ export default function Navigation() {
               </a>
             ))}
           </nav>
+
+          <a
+            href="#contact"
+            onClick={(e) => handleNavClick(e, '#contact')}
+            className="btn-primary w-full justify-center"
+            style={{
+              marginTop: '12px',
+              padding: '14px 20px',
+              fontSize: '0.82rem',
+              textDecoration: 'none',
+            }}
+          >
+            Start a Project
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+              <path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </a>
         </div>
 
         <div
@@ -333,10 +354,10 @@ export default function Navigation() {
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'rgba(8, 11, 114, 0.7)' }}>
             <span>Inquiries</span>
             <a
-              href="mailto:hello@tatakaelabs.tech"
+              href="mailto:tatakaelabs@gmail.com"
               style={{ fontWeight: 600, color: '#080B72', textDecoration: 'none' }}
             >
-              hello@tatakaelabs.tech
+              tatakaelabs@gmail.com
             </a>
           </div>
           <div

@@ -72,15 +72,23 @@ function PhilosophyStep({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onClick={() => setActive(!active)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          setActive(!active);
+        }
+      }}
+      className="cursor-pointer select-none"
       style={{
-        padding: '32px 0',
+        padding: '24px 0',
         borderTop: '1px solid rgba(247,247,245,0.1)',
-        cursor: 'default',
-        transition: 'padding 0.4s ease',
-        paddingBottom: active ? '48px' : '32px',
+        transition: 'all 0.3s ease',
+        paddingBottom: active ? '36px' : '24px',
       }}
     >
-      <div className="flex items-start justify-between gap-8">
+      <div className="flex items-start justify-between gap-4 sm:gap-8">
         {/* Number */}
         <span
           style={{

@@ -167,21 +167,14 @@ function ReasonCard({ reason, index }: { reason: typeof reasons[0]; index: numbe
   return (
     <div
       ref={cardRef}
-      style={{
-        padding: '40px 32px',
-        borderRight: index % 3 !== 2 ? '1px solid rgba(8,11,114,0.08)' : 'none',
-        borderBottom: index < 3 ? '1px solid rgba(8,11,114,0.08)' : 'none',
-        transition: 'background 0.4s ease',
-      }}
-      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(8,11,114,0.03)'; }}
-      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+      className="p-6 sm:p-8 lg:p-10 border-b border-[#080B72]/10 md:border-r last:border-b-0 lg:[&:nth-child(3n)]:border-r-0 transition-colors duration-300 hover:bg-[#080B72]/[0.03]"
     >
       <div
         style={{
           fontSize: '1.4rem',
           color: '#080B72',
-          opacity: 0.3,
-          marginBottom: '20px',
+          opacity: 0.35,
+          marginBottom: '16px',
         }}
       >
         {reason.icon}
@@ -191,7 +184,7 @@ function ReasonCard({ reason, index }: { reason: typeof reasons[0]; index: numbe
         fontWeight: 700,
         letterSpacing: '-0.01em',
         color: '#080B72',
-        marginBottom: '12px',
+        marginBottom: '10px',
       }}>
         {reason.title}
       </h3>
@@ -199,7 +192,7 @@ function ReasonCard({ reason, index }: { reason: typeof reasons[0]; index: numbe
         fontSize: '0.875rem',
         lineHeight: 1.65,
         color: '#05062F',
-        opacity: 0.55,
+        opacity: 0.6,
         fontWeight: 300,
       }}>
         {reason.description}

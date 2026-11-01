@@ -89,7 +89,7 @@ export default function IntroSection() {
             </p>
 
             {/* Stats row */}
-            <div className="flex flex-wrap gap-12">
+            <div className="flex flex-wrap gap-6 sm:gap-12">
               {[
                 { value: '10+', label: 'Service Areas' },
                 { value: '∞', label: 'Product Possibilities' },
@@ -98,7 +98,7 @@ export default function IntroSection() {
                 <div key={stat.label}>
                   <div
                     style={{
-                      fontSize: 'clamp(2rem, 4vw, 3rem)',
+                      fontSize: 'clamp(1.8rem, 4vw, 3rem)',
                       fontWeight: 700,
                       color: '#F7F7F5',
                       letterSpacing: '-0.03em',
@@ -109,7 +109,7 @@ export default function IntroSection() {
                   </div>
                   <div
                     style={{
-                      fontSize: '0.7rem',
+                      fontSize: '0.65rem',
                       fontWeight: 500,
                       letterSpacing: '0.1em',
                       color: '#F7F7F5',
@@ -127,7 +127,7 @@ export default function IntroSection() {
         </div>
 
         {/* Marquee ticker */}
-        <div className="mt-20 overflow-hidden" style={{ borderTop: '1px solid rgba(247,247,245,0.1)', paddingTop: '24px' }}>
+        <div className="mt-12 sm:mt-20 overflow-hidden" style={{ borderTop: '1px solid rgba(247,247,245,0.1)', paddingTop: '20px' }}>
           <div className="marquee-track" aria-hidden>
             {[
               'Software Engineering',

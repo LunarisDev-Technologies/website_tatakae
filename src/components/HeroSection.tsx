@@ -111,7 +111,7 @@ export default function HeroSection() {
           {/* Subtitle + CTA row */}
           <div
             ref={ctaRef}
-            className="mt-10 flex flex-col md:flex-row md:items-end md:justify-between gap-8"
+            className="mt-8 sm:mt-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6 sm:gap-8"
             style={{ opacity: 0 }}
           >
             <p
@@ -126,9 +126,9 @@ export default function HeroSection() {
               and intelligent systems that help businesses move forward.
             </p>
 
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 w-full sm:w-auto">
               <button
-                className="btn-primary"
+                className="btn-primary w-full sm:w-auto justify-center"
                 onClick={() => handleScroll('#products')}
               >
                 Explore Our Work
@@ -137,7 +137,7 @@ export default function HeroSection() {
                 </svg>
               </button>
               <button
-                className="btn-outline"
+                className="btn-outline w-full sm:w-auto justify-center"
                 onClick={() => handleScroll('#contact')}
               >
                 Let&apos;s Build Something
@@ -147,10 +147,10 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* Scroll indicator (desktop only) */}
       <div
         ref={scrollRef}
-        className="absolute bottom-8 right-[5vw] flex flex-col items-center gap-3 z-10"
+        className="hidden md:flex absolute bottom-8 right-[5vw] flex-col items-center gap-3 z-10"
         style={{ opacity: 0 }}
       >
         <div

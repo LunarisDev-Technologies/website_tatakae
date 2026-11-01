@@ -138,11 +138,11 @@ export default function ContactSection() {
                   Email
                 </p>
                 <a
-                  href="mailto:hello@tatakaelabs.tech"
+                  href="mailto:tatakaelabs@gmail.com"
                   className="hover-underline"
                   style={{ fontSize: '1rem', fontWeight: 500, color: '#080B72', textDecoration: 'none' }}
                 >
-                  hello@tatakaelabs.tech
+                  tatakaelabs@gmail.com
                 </a>
               </div>
 

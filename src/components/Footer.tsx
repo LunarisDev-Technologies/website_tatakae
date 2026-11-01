@@ -54,7 +54,7 @@ export default function Footer() {
   }, []);
 
   const handleCopyEmail = () => {
-    navigator.clipboard.writeText('hello@tatakaelabs.tech');
+    navigator.clipboard.writeText('tatakaelabs@gmail.com');
     setCopied(true);
     setTimeout(() => setCopied(false), 2200);
   };
@@ -132,15 +132,16 @@ export default function Footer() {
             </h3>
           </div>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px', alignItems: 'center' }}>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 w-full sm:w-auto">
             {/* Copyable Email Pill */}
             <button
               onClick={handleCopyEmail}
+              className="w-full sm:w-auto justify-center"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '10px',
-                padding: '14px 24px',
+                padding: '12px 22px',
                 borderRadius: '9999px',
                 backgroundColor: 'rgba(247, 247, 245, 0.06)',
                 border: '1px solid rgba(247, 247, 245, 0.15)',
@@ -150,6 +151,7 @@ export default function Footer() {
                 letterSpacing: '0.06em',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
+                minHeight: '44px',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = 'rgba(247, 247, 245, 0.12)';
@@ -161,7 +163,7 @@ export default function Footer() {
               }}
             >
               <span style={{ fontFamily: 'monospace', color: '#7e87ff' }}>✉</span>
-              <span>hello@tatakaelabs.tech</span>
+              <span className="truncate">tatakaelabs@gmail.com</span>
               <span
                 style={{
                   fontSize: '0.65rem',
@@ -171,6 +173,7 @@ export default function Footer() {
                   backgroundColor: copied ? '#080B72' : 'rgba(247, 247, 245, 0.12)',
                   color: '#FFFFFF',
                   transition: 'all 0.3s ease',
+                  flexShrink: 0,
                 }}
               >
                 {copied ? 'COPIED!' : 'COPY'}
@@ -180,11 +183,12 @@ export default function Footer() {
             {/* Back to Top Button */}
             <button
               onClick={scrollToTop}
+              className="w-full sm:w-auto justify-center"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                padding: '14px 22px',
+                padding: '12px 20px',
                 borderRadius: '9999px',
                 backgroundColor: 'transparent',
                 border: '1px solid rgba(247, 247, 245, 0.12)',
@@ -195,6 +199,7 @@ export default function Footer() {
                 textTransform: 'uppercase',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
+                minHeight: '44px',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.borderColor = '#F7F7F5';

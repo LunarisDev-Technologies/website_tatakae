@@ -5,56 +5,81 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Float, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
-// 3D Floating TATAKAE LABS Logo Emblem — Pure & Vibrant, Never Black
+// 3D Floating TATAKAE LABS Logo Emblem — Fully Responsive on Android & Desktop
 function Logo3DEmblem() {
   const groupRef = useRef<THREE.Group>(null);
   const mouse = useRef({ x: 0, y: 0 });
   const { size } = useThree();
+
+  const isMobile = size.width < 768;
+  const targetX = isMobile ? 0 : 1.45;
+  const targetY = isMobile ? 0.95 : 0.25;
+  const targetZ = isMobile ? -0.7 : -0.2;
+  const baseScale = isMobile ? 0.72 : 1.0;
 
   const texture = useTexture('/logo.png');
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.generateMipmaps = true;
 
   useEffect(() => {
-    const onMouseMove = (e: MouseEvent) => {
-      mouse.current.x = (e.clientX / size.width - 0.5) * 2;
-      mouse.current.y = -(e.clientY / size.height - 0.5) * 2;
+    // Touch & Mouse listener for Android & Desktop
+    const handleMove = (clientX: number, clientY: number) => {
+      mouse.current.x = (clientX / size.width - 0.5) * 2;
+      mouse.current.y = -(clientY / size.height - 0.5) * 2;
     };
+
+    const onMouseMove = (e: MouseEvent) => handleMove(e.clientX, e.clientY);
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        handleMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    };
+
     window.addEventListener('mousemove', onMouseMove, { passive: true });
-    return () => window.removeEventListener('mousemove', onMouseMove);
+    window.addEventListener('touchmove', onTouchMove, { passive: true });
+
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('touchmove', onTouchMove);
+    };
   }, [size]);
 
   useFrame((state) => {
     if (!groupRef.current) return;
     const t = state.clock.getElapsedTime();
 
-    // Gentle float with smooth mouse parallax
-    const targetRotX = Math.sin(t * 0.35) * 0.1 - mouse.current.y * 0.15;
-    const targetRotY = Math.cos(t * 0.3) * 0.15 + mouse.current.x * 0.2;
-    const targetRotZ = Math.sin(t * 0.2) * 0.04;
+    // Responsive position lerping
+    groupRef.current.position.x = THREE.MathUtils.lerp(groupRef.current.position.x, targetX, 0.05);
+    groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, targetY, 0.05);
+    groupRef.current.position.z = THREE.MathUtils.lerp(groupRef.current.position.z, targetZ, 0.05);
+
+    // Gentle float with smooth mouse/touch parallax
+    const targetRotX = Math.sin(t * 0.35) * 0.1 - mouse.current.y * 0.14;
+    const targetRotY = Math.cos(t * 0.3) * 0.14 + mouse.current.x * 0.18;
+    const targetRotZ = Math.sin(t * 0.2) * 0.03;
 
     groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, targetRotX, 0.06);
     groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetRotY, 0.06);
     groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, targetRotZ, 0.06);
 
     // Subtle breathing pulse
-    const s = 1 + Math.sin(t * 1.2) * 0.012;
+    const s = baseScale * (1 + Math.sin(t * 1.2) * 0.012);
     groupRef.current.scale.set(s, s, s);
   });
 
   return (
-    <Float speed={1.6} rotationIntensity={0.2} floatIntensity={0.5}>
+    <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.45}>
       <group
         ref={groupRef}
-        position={[1.5, 0.25, -0.2]} // Elegantly positioned in hero right background
+        position={[targetX, targetY, targetZ]}
       >
-        {/* Soft White Backing Disc so transparency is never dark/black */}
+        {/* Soft White Backing Disc */}
         <mesh position={[0, 0, 0]}>
-          <cylinderGeometry args={[1.36, 1.36, 0.06, 64]} />
+          <cylinderGeometry args={[1.36, 1.36, 0.06, 48]} />
           <meshBasicMaterial color="#FFFFFF" />
         </mesh>
 
-        {/* Front Emblem: MeshBasicMaterial preserves 100% true vibrant color without black shadows */}
+        {/* Front Emblem: 100% vibrant electric navy */}
         <mesh position={[0, 0, 0.035]}>
           <planeGeometry args={[2.7, 2.7]} />
           <meshBasicMaterial
@@ -76,15 +101,15 @@ function Logo3DEmblem() {
           />
         </mesh>
 
-        {/* Refined Electric Navy Outer Ring (Luminous, never black) */}
+        {/* Refined Electric Navy Outer Ring */}
         <mesh position={[0, 0, 0]}>
-          <torusGeometry args={[1.38, 0.015, 32, 100]} />
+          <torusGeometry args={[1.38, 0.015, 24, 80]} />
           <meshBasicMaterial color="#080B72" />
         </mesh>
 
         {/* Ambient Expanding Wave Ring */}
         <mesh position={[0, 0, -0.02]}>
-          <torusGeometry args={[1.75, 0.008, 16, 100]} />
+          <torusGeometry args={[1.75, 0.008, 16, 80]} />
           <meshBasicMaterial
             color="#080B72"
             transparent
@@ -94,7 +119,7 @@ function Logo3DEmblem() {
 
         {/* Secondary Delicate Wave Ring */}
         <mesh position={[0, 0, -0.04]} rotation={[0.3, 0.2, 0]}>
-          <torusGeometry args={[2.05, 0.006, 16, 100]} />
+          <torusGeometry args={[2.05, 0.006, 16, 80]} />
           <meshBasicMaterial
             color="#080B72"
             transparent
@@ -106,39 +131,43 @@ function Logo3DEmblem() {
   );
 }
 
-// Background Distort Field (Subtle & clean)
+// Background Distort Field (Optimized for mobile GPUs)
 function OrganicDistortField() {
   const meshRef = useRef<THREE.Mesh>(null);
+  const { size } = useThree();
+  const isMobile = size.width < 768;
 
   useFrame((state) => {
     if (!meshRef.current) return;
     const t = state.clock.getElapsedTime();
-    meshRef.current.rotation.x = t * 0.025;
-    meshRef.current.rotation.y = t * 0.04;
+    meshRef.current.rotation.x = t * 0.02;
+    meshRef.current.rotation.y = t * 0.035;
   });
 
   return (
-    <mesh ref={meshRef} position={[-2, -0.6, -2.2]}>
-      <torusKnotGeometry args={[1.8, 0.45, 160, 20, 2, 3]} />
+    <mesh ref={meshRef} position={[isMobile ? 0 : -2, isMobile ? -1.2 : -0.6, -2.5]}>
+      <torusKnotGeometry args={[isMobile ? 1.3 : 1.8, 0.38, 100, 16, 2, 3]} />
       <meshBasicMaterial
         color="#080B72"
         wireframe
         transparent
-        opacity={0.035}
+        opacity={isMobile ? 0.025 : 0.035}
       />
     </mesh>
   );
 }
 
-// Interactive Particle Constellation
+// Interactive Particle Constellation (Lightweight for mobile battery & FPS)
 function ParticleDust() {
   const particlesRef = useRef<THREE.Points>(null);
-  const count = 180;
+  const { size } = useThree();
+  const isMobile = size.width < 768;
+  const count = isMobile ? 80 : 180;
 
   const positions = useMemo(() => {
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      const r = 2.4 + Math.random() * 2.6;
+      const r = 2.0 + Math.random() * 2.6;
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.random() * Math.PI;
       pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
@@ -150,8 +179,8 @@ function ParticleDust() {
 
   useFrame((state) => {
     if (!particlesRef.current) return;
-    particlesRef.current.rotation.y = state.clock.getElapsedTime() * 0.025;
-    particlesRef.current.rotation.x = Math.sin(state.clock.getElapsedTime() * 0.07) * 0.04;
+    particlesRef.current.rotation.y = state.clock.getElapsedTime() * 0.02;
+    particlesRef.current.rotation.x = Math.sin(state.clock.getElapsedTime() * 0.06) * 0.03;
   });
 
   return (
@@ -164,7 +193,7 @@ function ParticleDust() {
       </bufferGeometry>
       <pointsMaterial
         color="#080B72"
-        size={0.02}
+        size={isMobile ? 0.028 : 0.02}
         transparent
         opacity={0.3}
         sizeAttenuation
@@ -191,7 +220,7 @@ export default function HeroThreeScene() {
       <div
         className="w-full h-full opacity-30 pointer-events-none"
         style={{
-          background: 'radial-gradient(circle at 75% 35%, rgba(8,11,114,0.12) 0%, rgba(5,6,47,0.03) 50%, transparent 80%)',
+          background: 'radial-gradient(circle at 50% 35%, rgba(8,11,114,0.12) 0%, rgba(5,6,47,0.03) 50%, transparent 80%)',
         }}
       />
     );
@@ -199,9 +228,13 @@ export default function HeroThreeScene() {
 
   return (
     <Canvas
-      camera={{ position: [0, 0, 5], fov: 45 }}
+      camera={{ position: [0, 0, 5], fov: 48 }}
       style={{ width: '100%', height: '100%' }}
-      gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+      gl={{
+        antialias: true,
+        alpha: true,
+        powerPreference: 'high-performance',
+      }}
       dpr={[1, 1.5]}
     >
       <ambientLight intensity={1.0} />

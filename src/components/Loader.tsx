@@ -139,8 +139,8 @@ export default function Loader({ onComplete }: LoaderProps) {
       <div
         className="relative flex items-center justify-center"
         style={{
-          width: '380px',
-          height: '380px',
+          width: 'min(340px, 86vw)',
+          height: 'min(340px, 86vw)',
           perspective: '1200px',
         }}
       >
@@ -148,8 +148,8 @@ export default function Loader({ onComplete }: LoaderProps) {
         <div
           className="absolute rounded-full border border-[#080B72]/15 pointer-events-none"
           style={{
-            width: '340px',
-            height: '340px',
+            width: 'min(310px, 80vw)',
+            height: 'min(310px, 80vw)',
             animation: 'orbitRadar 18s linear infinite',
           }}
         >
@@ -160,8 +160,8 @@ export default function Loader({ onComplete }: LoaderProps) {
         <div
           className="absolute rounded-full pointer-events-none border border-[#080B72]/20"
           style={{
-            width: '290px',
-            height: '290px',
+            width: 'min(260px, 68vw)',
+            height: 'min(260px, 68vw)',
             animation: 'pulseRing1 4.5s ease-in-out infinite',
           }}
         />
@@ -170,8 +170,8 @@ export default function Loader({ onComplete }: LoaderProps) {
         <div
           className="absolute rounded-full pointer-events-none border border-dashed border-[#080B72]/15"
           style={{
-            width: '250px',
-            height: '250px',
+            width: 'min(220px, 58vw)',
+            height: 'min(220px, 58vw)',
             animation: 'pulseRing2 3.8s ease-in-out infinite',
           }}
         />
@@ -180,8 +180,8 @@ export default function Loader({ onComplete }: LoaderProps) {
         <div
           className="absolute rounded-full pointer-events-none"
           style={{
-            width: '220px',
-            height: '220px',
+            width: 'min(190px, 50vw)',
+            height: 'min(190px, 50vw)',
             background: 'radial-gradient(circle, rgba(8, 11, 114, 0.22) 0%, rgba(5, 6, 47, 0.05) 55%, transparent 75%)',
             filter: 'blur(16px)',
           }}
@@ -203,17 +203,19 @@ export default function Loader({ onComplete }: LoaderProps) {
             }}
           >
             {/* The Logo Asset */}
-            <Image
-              src="/logo.png"
-              alt="TATAKAE LABS Emblem"
-              width={190}
-              height={190}
-              priority
-              className="pointer-events-none select-none"
-              style={{
-                transform: 'translateZ(40px)',
-              }}
-            />
+            <div className="w-[145px] sm:w-[180px] h-[145px] sm:h-[180px] relative flex items-center justify-center">
+              <Image
+                src="/logo.png"
+                alt="TATAKAE LABS Emblem"
+                fill
+                sizes="(max-width: 640px) 145px, 180px"
+                priority
+                className="pointer-events-none select-none object-contain"
+                style={{
+                  transform: 'translateZ(40px)',
+                }}
+              />
+            </div>
 
             {/* Shimmer Light Reflection Sweep */}
             <div
