@@ -99,23 +99,19 @@ export default function Navigation() {
           >
             <div
               style={{
-                width: '36px',
-                height: '36px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                borderRadius: '50%',
-                backgroundColor: 'rgba(8, 11, 114, 0.05)',
                 transition: 'transform 0.3s ease',
               }}
             >
               <Image
                 src="/logo.png"
                 alt="TATAKAE LABS Emblem"
-                width={30}
-                height={30}
+                width={34}
+                height={34}
                 priority
-                style={{ width: 'auto', height: 'auto' }}
+                style={{ width: '34px', height: '34px', objectFit: 'contain' }}
               />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column' }}>

@@ -61,29 +61,29 @@ html.lenis, html.lenis body {
 .text-display {
   font-size: clamp(2.8rem, 7.5vw, 8.5rem);
   font-weight: 700;
-  line-height: 0.92;
-  letter-spacing: -0.03em;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
 }
 
 .text-headline {
   font-size: clamp(2rem, 5vw, 5rem);
   font-weight: 700;
-  line-height: 0.95;
-  letter-spacing: -0.025em;
+  line-height: 1.05;
+  letter-spacing: -0.018em;
 }
 
 .text-subheadline {
   font-size: clamp(1.2rem, 2.5vw, 2.2rem);
   font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: -0.015em;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
 }
 
 .text-body {
   font-size: clamp(0.92rem, 1.1vw, 1.05rem);
-  line-height: 1.75;
-  letter-spacing: 0.01em;
-  font-weight: 300;
+  line-height: 1.7;
+  letter-spacing: 0.005em;
+  font-weight: 400;
 }
 
 .section-padding {

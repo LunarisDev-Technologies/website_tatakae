@@ -73,15 +73,9 @@ function Logo3DEmblem() {
         ref={groupRef}
         position={[targetX, targetY, targetZ]}
       >
-        {/* Soft White Backing Disc */}
-        <mesh position={[0, 0, 0]}>
-          <cylinderGeometry args={[1.36, 1.36, 0.06, 48]} />
-          <meshBasicMaterial color="#FFFFFF" />
-        </mesh>
-
-        {/* Front Emblem: 100% vibrant electric navy */}
-        <mesh position={[0, 0, 0.035]}>
-          <planeGeometry args={[2.7, 2.7]} />
+        {/* Pure Floating Logo Emblem — All artificial circular rings and borders removed */}
+        <mesh position={[0, 0, 0.01]}>
+          <planeGeometry args={[2.8, 2.8]} />
           <meshBasicMaterial
             map={texture}
             transparent
@@ -90,70 +84,18 @@ function Logo3DEmblem() {
           />
         </mesh>
 
-        {/* Back Emblem */}
-        <mesh position={[0, 0, -0.035]} rotation={[0, Math.PI, 0]}>
-          <planeGeometry args={[2.7, 2.7]} />
+        {/* Back Emblem for seamless double-sided floating with non-mirrored logo */}
+        <mesh position={[0, 0, -0.01]} rotation={[0, Math.PI, 0]} scale={[-1, 1, 1]}>
+          <planeGeometry args={[2.8, 2.8]} />
           <meshBasicMaterial
             map={texture}
             transparent
             toneMapped={false}
             side={THREE.FrontSide}
-          />
-        </mesh>
-
-        {/* Refined Electric Navy Outer Ring */}
-        <mesh position={[0, 0, 0]}>
-          <torusGeometry args={[1.38, 0.015, 24, 80]} />
-          <meshBasicMaterial color="#080B72" />
-        </mesh>
-
-        {/* Ambient Expanding Wave Ring */}
-        <mesh position={[0, 0, -0.02]}>
-          <torusGeometry args={[1.75, 0.008, 16, 80]} />
-          <meshBasicMaterial
-            color="#080B72"
-            transparent
-            opacity={0.16}
-          />
-        </mesh>
-
-        {/* Secondary Delicate Wave Ring */}
-        <mesh position={[0, 0, -0.04]} rotation={[0.3, 0.2, 0]}>
-          <torusGeometry args={[2.05, 0.006, 16, 80]} />
-          <meshBasicMaterial
-            color="#080B72"
-            transparent
-            opacity={0.08}
           />
         </mesh>
       </group>
     </Float>
-  );
-}
-
-// Background Distort Field (Optimized for mobile GPUs)
-function OrganicDistortField() {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const { size } = useThree();
-  const isMobile = size.width < 768;
-
-  useFrame((state) => {
-    if (!meshRef.current) return;
-    const t = state.clock.getElapsedTime();
-    meshRef.current.rotation.x = t * 0.02;
-    meshRef.current.rotation.y = t * 0.035;
-  });
-
-  return (
-    <mesh ref={meshRef} position={[isMobile ? 0 : -2, isMobile ? -1.2 : -0.6, -2.5]}>
-      <torusKnotGeometry args={[isMobile ? 1.3 : 1.8, 0.38, 100, 16, 2, 3]} />
-      <meshBasicMaterial
-        color="#080B72"
-        wireframe
-        transparent
-        opacity={isMobile ? 0.025 : 0.035}
-      />
-    </mesh>
   );
 }
 
@@ -242,7 +184,6 @@ export default function HeroThreeScene() {
 
       <Suspense fallback={null}>
         <Logo3DEmblem />
-        <OrganicDistortField />
         <ParticleDust />
       </Suspense>
     </Canvas>

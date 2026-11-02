@@ -106,9 +106,16 @@ export default function Loader({ onComplete }: LoaderProps) {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
-        @keyframes logoFloatCinematic {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-8px) rotate(1.2deg); }
+        @keyframes logoSpin360 {
+          0% {
+            transform: rotateY(0deg) translateY(0px);
+          }
+          50% {
+            transform: rotateY(180deg) translateY(-8px);
+          }
+          100% {
+            transform: rotateY(360deg) translateY(0px);
+          }
         }
         @keyframes sweepGlint {
           0% { transform: translateX(-150%) rotate(45deg); opacity: 0; }
@@ -196,42 +203,74 @@ export default function Loader({ onComplete }: LoaderProps) {
           }}
         >
           <div
-            className="relative flex items-center justify-center p-2 rounded-full"
+            className="relative flex items-center justify-center p-2"
             style={{
-              animation: phase === 'loading' ? 'logoFloatCinematic 4s ease-in-out infinite' : 'none',
+              animation: phase === 'loading' ? 'logoSpin360 4.2s cubic-bezier(0.45, 0.05, 0.25, 0.95) infinite' : 'none',
+              transformStyle: 'preserve-3d',
               filter: 'drop-shadow(0 25px 35px rgba(8, 11, 114, 0.22)) drop-shadow(0 6px 12px rgba(5, 6, 47, 0.12))',
             }}
           >
-            {/* The Logo Asset */}
-            <div className="w-[145px] sm:w-[180px] h-[145px] sm:h-[180px] relative flex items-center justify-center">
-              <Image
-                src="/logo.png"
-                alt="TATAKAE LABS Emblem"
-                fill
-                sizes="(max-width: 640px) 145px, 180px"
-                priority
-                className="pointer-events-none select-none object-contain"
-                style={{
-                  transform: 'translateZ(40px)',
-                }}
-              />
-            </div>
-
-            {/* Shimmer Light Reflection Sweep */}
+            {/* The 3D Double-Sided Logo Emblem */}
             <div
-              className="absolute inset-0 rounded-full overflow-hidden pointer-events-none"
-              style={{
-                maskImage: 'radial-gradient(circle, black 65%, transparent 70%)',
-                WebkitMaskImage: 'radial-gradient(circle, black 65%, transparent 70%)',
-              }}
+              className="w-[145px] sm:w-[180px] h-[145px] sm:h-[180px] relative flex items-center justify-center"
+              style={{ transformStyle: 'preserve-3d' }}
             >
+              {/* Front Face */}
               <div
-                className="absolute inset-0 w-[40px] h-[300%]"
+                className="absolute inset-0 flex items-center justify-center"
                 style={{
-                  background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent)',
-                  animation: 'sweepGlint 3s cubic-bezier(0.4, 0, 0.2, 1) infinite',
+                  backfaceVisibility: 'hidden',
+                  WebkitBackfaceVisibility: 'hidden',
+                  transform: 'translateZ(6px)',
                 }}
-              />
+              >
+                <Image
+                  src="/logo.png"
+                  alt="TATAKAE LABS Emblem Front"
+                  fill
+                  sizes="(max-width: 640px) 145px, 180px"
+                  priority
+                  className="pointer-events-none select-none object-contain"
+                />
+              </div>
+
+              {/* Back Face (Non-mirrored so it is readable from both sides during 360 spin) */}
+              <div
+                className="absolute inset-0 flex items-center justify-center"
+                style={{
+                  backfaceVisibility: 'hidden',
+                  WebkitBackfaceVisibility: 'hidden',
+                  transform: 'rotateY(180deg) translateZ(6px)',
+                }}
+              >
+                <Image
+                  src="/logo.png"
+                  alt="TATAKAE LABS Emblem Back"
+                  fill
+                  sizes="(max-width: 640px) 145px, 180px"
+                  priority
+                  className="pointer-events-none select-none object-contain"
+                  style={{ transform: 'scaleX(-1)' }}
+                />
+              </div>
+
+              {/* Shimmer Light Reflection Sweep */}
+              <div
+                className="absolute inset-0 rounded-full overflow-hidden pointer-events-none"
+                style={{
+                  maskImage: 'radial-gradient(circle, black 65%, transparent 70%)',
+                  WebkitMaskImage: 'radial-gradient(circle, black 65%, transparent 70%)',
+                  transform: 'translateZ(8px)',
+                }}
+              >
+                <div
+                  className="absolute inset-0 w-[40px] h-[300%]"
+                  style={{
+                    background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent)',
+                    animation: 'sweepGlint 3s cubic-bezier(0.4, 0, 0.2, 1) infinite',
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
